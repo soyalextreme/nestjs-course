@@ -7,7 +7,12 @@ import {
     Body,
     Put,
     Delete,
+    HttpStatus,
+    HttpCode,
+    Res,
 } from '@nestjs/common';
+
+import { Response } from 'express';
 
 @Controller('products')
 export class ProductsController {
@@ -21,12 +26,14 @@ export class ProductsController {
     // dynamic endpoints
 
     @Get(':id')
-    getOne(@Param('id') id: string): string {
-        return `Product ${id}`;
+    @HttpCode(HttpStatus.ACCEPTED)
+    getOne(@Res() response: Response, @Param('id') id: string) {
+        response.status(200).send({
+            id,
+        });
     }
 
     // query endpoints
-
     @Get()
     getFilter(
         @Query('limit') limit = 100,
