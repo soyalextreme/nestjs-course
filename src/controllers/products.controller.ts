@@ -13,9 +13,12 @@ import {
 } from '@nestjs/common';
 
 import { Response } from 'express';
+import { ProductsService } from '../services/products.service';
 
 @Controller('products')
 export class ProductsController {
+    constructor(private productsService: ProductsService) {}
+
     // static endpoints
 
     @Get('filter')
@@ -26,51 +29,59 @@ export class ProductsController {
     // dynamic endpoints
 
     @Get(':id')
-    @HttpCode(HttpStatus.ACCEPTED) // using decorator
-    getOne(@Res() response: Response, @Param('id') id: string) {
+    // @HttpCode(HttpStatus.ACCEPTED) // using decorator
+    getOne(@Param('id') id: string) {
         // using express directly
-        response.status(200).send({
-            id,
-        });
+        // response.status(200).send({
+        //     id,
+        // });
+
+        return this.productsService.findOne(+id);
     }
 
-    // query endpoints
     @Get()
     getFilter(
         @Query('limit') limit = 100,
         @Query('offset') offset = 0,
         @Query('brand') brand: string,
     ) {
-        return {
-            msg: 'OK',
-            data: {
-                limit,
-                offset,
-                brand,
-            },
-        };
+        // return {
+        //     msg: 'OK',
+        //     data: {
+        //         limit,
+        //         offset,
+        //         brand,
+        //     },
+        // };
+        return this.productsService.findAll();
     }
 
+    //* Create
     @Post()
     create(@Body() payload: any) {
-        return {
-            msg: 'Create action',
-            payload,
-        };
+        // return {
+        //     msg: 'Create action',
+        //     payload,
+        // };
+        return this.productsService.create(payload);;
     }
 
+    //* Update
     @Put(':productId')
-    update(@Param('productId') id: number, @Body() payload: any) {
-        return {
-            id,
-            payload,
-        };
+    update(@Param('productId') id: string, @Body() payload: any) {
+        // return {
+        //     id,
+        //     payload,
+        // };
+        // return "funcionando"
+        return this.productsService.update(+id, payload);
     }
 
     @Delete(':id')
     delete(@Param('id') id: number) {
-        return {
-            id,
-        };
+        // return {
+        //     id,
+        // };
+        return this.productsService.delete(id);
     }
 }

@@ -42,13 +42,30 @@ export class ProductsService {
     }
 
     update(id: number, payload: any) {
-        this.products.map((item) => {
-            if (item.id === id) {
-                item = {
-                    id,
+        // const product = this.findOne(id);
+        // if (product) {
+        //     const index = this.products.findIndex((item) => item.id === id);
+        //     this.products[index] = {
+        //         ...this.products[index],
+        //         ...payload,
+        //     };
+        //     return this.products[index];
+        // }
+        // return null;
+        let updated: Product | undefined;
+
+        this.products.map((item, idx) => {
+            console.log(typeof item.id, typeof id);
+
+            if (item.id == id) {
+                this.products[idx] = {
+                    ...this.products[idx],
                     ...payload,
                 };
+                updated = this.products[idx];
             }
         });
+
+        return updated;
     }
 }
